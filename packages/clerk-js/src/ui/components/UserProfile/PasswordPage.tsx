@@ -117,7 +117,7 @@ export const PasswordPage = withCardStateProvider(() => {
             <Form.Control
               {...passwordField.props}
               minLength={6}
-              complexity={false}
+              complexity={true}
               strengthMeter={true}
               required
               autoFocus={!user.passwordEnabled}

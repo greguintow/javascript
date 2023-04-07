@@ -1,8 +1,10 @@
+import type { ZxcvbnResult } from '@zxcvbn-ts/core';
 import { useCallback, useState } from 'react';
 
 import { useEnvironment } from '../contexts';
+import { localizationKeys, useLocalizations } from '../localization';
 
-type zxcvbnFN = (password: string, userInputs?: (string | number)[]) => any;
+type zxcvbnFN = (password: string, userInputs?: (string | number)[]) => ZxcvbnResult;
 
 export const usePasswordStrength = (callbacks?: {
   onValidationFailed?: (validationErrorMessages: string[], errorMessage: string) => void;
@@ -14,7 +16,8 @@ export const usePasswordStrength = (callbacks?: {
     },
   } = useEnvironment();
 
-  const [zxcvbnResult, setZxcvbnResult] = useState<any | undefined>(undefined);
+  const { t } = useLocalizations();
+  const [zxcvbnResult, setZxcvbnResult] = useState<ZxcvbnResult | undefined>(undefined);
 
   const getScore = useCallback(
     (zxcvbn: zxcvbnFN) => (password: string) => {
@@ -23,10 +26,12 @@ export const usePasswordStrength = (callbacks?: {
 
       if (result.feedback.suggestions?.length > 0) {
         const errors = [...result.feedback.suggestions];
+        console.log(result.score, min_zxcvbn_strength);
+        const fErrors = errors.map(er => t(localizationKeys(`zxcvbn.suggestions.${er}` as any)));
         if (result.score < min_zxcvbn_strength) {
-          errors.unshift('Your passwords is not strong enough.');
+          fErrors.unshift(t(localizationKeys('zxcvbn.notEnough')));
         }
-        callbacks?.onValidationFailed?.(errors, errors.join(' '));
+        callbacks?.onValidationFailed?.(fErrors, fErrors.join(' '));
       } else if (result.score >= min_zxcvbn_strength) {
         callbacks?.onValidationSuccess?.();
       }
