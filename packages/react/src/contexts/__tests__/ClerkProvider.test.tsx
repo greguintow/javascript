@@ -2,7 +2,7 @@ import { deDe, enUS, esES, frFR, itIT, ptBR, ruRU, svSE } from '@clerk/localizat
 import { dark } from '@clerk/themes';
 import { expectTypeOf } from 'expect-type';
 
-import type { ClerkProvider } from './ClerkProvider';
+import type { ClerkProvider } from '../ClerkProvider';
 
 //@ts-ignore
 type ClerkProviderProps = Parameters<typeof ClerkProvider>[0];

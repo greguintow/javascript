@@ -1,9 +1,17 @@
 import { expectTypeOf } from 'expect-type';
+import type { NextMiddleware } from 'next/server';
 
-import type { WithAuthOptions } from './types';
+import type { WithAuthOptions } from '../types';
+import { withClerkMiddleware } from '../withClerkMiddleware';
 
 describe('withClerkMiddleware', () => {
   describe('Type tests', () => {
+    it('WithAuthOptions matches the options type in withClerkMiddleware', () => {
+      () => {
+        withClerkMiddleware((() => ({})) as unknown as NextMiddleware, {} as WithAuthOptions);
+      };
+    });
+
     describe('WithAuthOptions', () => {
       it('can receive the appropriate keys', () => {
         expectTypeOf({ publishableKey: '', secretKey: '' }).toMatchTypeOf<WithAuthOptions>();

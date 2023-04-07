@@ -1,29 +1,28 @@
 import { render, screen, userEvent, waitFor } from '@clerk/shared/testUtils';
 import React from 'react';
 
-import { SignOutButton } from './SignOutButton';
+import { SignInWithMetamaskButton } from '../SignInWithMetamaskButton';
 
-const mockSignOut = jest.fn();
+const mockAuthenticatewithMetamask = jest.fn();
 const originalError = console.error;
 
 const mockClerk = {
-  signOut: mockSignOut,
+  authenticateWithMetamask: mockAuthenticatewithMetamask,
 } as any;
 
 jest.mock('./withClerk', () => {
   return {
-    withClerk: (Component: any) => (props: any) => {
-      return (
+    withClerk: (Component: any) => (props: any) =>
+      (
         <Component
           {...props}
           clerk={mockClerk}
         />
-      );
-    },
+      ),
   };
 });
 
-describe('<SignOutButton />', () => {
+describe('<SignInWithMetamaskButton/>', () => {
   beforeAll(() => {
     console.error = jest.fn();
   });
@@ -33,30 +32,30 @@ describe('<SignOutButton />', () => {
   });
 
   beforeEach(() => {
-    mockSignOut.mockReset();
+    mockAuthenticatewithMetamask.mockReset();
   });
 
-  it('calls clerk.signOutOne when clicked', async () => {
-    render(<SignOutButton />);
-    const btn = screen.getByText('Sign out');
+  it('calls clerk.authenticateWithMetamask when clicked', async () => {
+    render(<SignInWithMetamaskButton />);
+    const btn = screen.getByText('Sign in with Metamask');
     userEvent.click(btn);
     await waitFor(() => {
-      expect(mockSignOut).toHaveBeenCalled();
+      expect(mockAuthenticatewithMetamask).toHaveBeenCalled();
     });
   });
 
   it('uses text passed as children', async () => {
-    render(<SignOutButton>text</SignOutButton>);
+    render(<SignInWithMetamaskButton>text</SignInWithMetamaskButton>);
     screen.getByText('text');
   });
 
   it('throws if multiple children provided', async () => {
     expect(() => {
       render(
-        <SignOutButton>
+        <SignInWithMetamaskButton>
           <button>1</button>
           <button>2</button>
-        </SignOutButton>,
+        </SignInWithMetamaskButton>,
       );
     }).toThrow();
   });

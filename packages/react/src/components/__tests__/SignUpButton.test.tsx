@@ -1,13 +1,13 @@
 import { render, screen, userEvent, waitFor } from '@clerk/shared/testUtils';
 import React from 'react';
 
-import { SignInButton } from './SignInButton';
+import { SignUpButton } from '../SignUpButton';
 
-const mockRedirectToSignIn = jest.fn();
+const mockRedirectToSignUp = jest.fn();
 const originalError = console.error;
 
 const mockClerk = {
-  redirectToSignIn: mockRedirectToSignIn,
+  redirectToSignUp: mockRedirectToSignUp,
 } as any;
 
 jest.mock('./withClerk', () => {
@@ -25,7 +25,7 @@ jest.mock('./withClerk', () => {
 
 const url = 'https://www.clerk.com';
 
-describe('<SignInButton/>', () => {
+describe('<SignUpButton/>', () => {
   beforeAll(() => {
     console.error = jest.fn();
   });
@@ -35,44 +35,44 @@ describe('<SignInButton/>', () => {
   });
 
   beforeEach(() => {
-    mockRedirectToSignIn.mockReset();
+    mockRedirectToSignUp.mockReset();
   });
 
-  it('calls clerk.redirectToSignIn when clicked', async () => {
-    render(<SignInButton />);
-    const btn = screen.getByText('Sign in');
+  it('calls clerk.redirectToSignUp when clicked', async () => {
+    render(<SignUpButton />);
+    const btn = screen.getByText('Sign up');
     userEvent.click(btn);
     await waitFor(() => {
-      expect(mockRedirectToSignIn).toHaveBeenCalled();
+      expect(mockRedirectToSignUp).toHaveBeenCalled();
     });
   });
 
   it('handles redirectUrl prop', async () => {
-    render(<SignInButton redirectUrl={url} />);
-    const btn = screen.getByText('Sign in');
+    render(<SignUpButton redirectUrl={url} />);
+    const btn = screen.getByText('Sign up');
     userEvent.click(btn);
     await waitFor(() => {
-      expect(mockRedirectToSignIn).toHaveBeenCalledWith({ redirectUrl: url });
+      expect(mockRedirectToSignUp).toHaveBeenCalledWith({ redirectUrl: url });
     });
   });
 
-  it('handles afterSignInUrl prop', async () => {
-    render(<SignInButton afterSignInUrl={url} />);
-    const btn = screen.getByText('Sign in');
+  it('handles afterSignUpUrl prop', async () => {
+    render(<SignUpButton afterSignUpUrl={url} />);
+    const btn = screen.getByText('Sign up');
     userEvent.click(btn);
     await waitFor(() => {
-      expect(mockRedirectToSignIn).toHaveBeenCalledWith({
-        afterSignInUrl: url,
+      expect(mockRedirectToSignUp).toHaveBeenCalledWith({
+        afterSignUpUrl: url,
       });
     });
   });
 
   it('handles afterSignUpUrl prop', async () => {
-    render(<SignInButton afterSignUpUrl={url} />);
-    const btn = screen.getByText('Sign in');
+    render(<SignUpButton afterSignUpUrl={url} />);
+    const btn = screen.getByText('Sign up');
     userEvent.click(btn);
     await waitFor(() => {
-      expect(mockRedirectToSignIn).toHaveBeenCalledWith({
+      expect(mockRedirectToSignUp).toHaveBeenCalledWith({
         afterSignUpUrl: url,
       });
     });
@@ -81,30 +81,30 @@ describe('<SignInButton/>', () => {
   it('renders passed button and calls both click handlers', async () => {
     const handler = jest.fn();
     render(
-      <SignInButton>
+      <SignUpButton>
         <button onClick={handler}>custom button</button>
-      </SignInButton>,
+      </SignUpButton>,
     );
     const btn = screen.getByText('custom button');
     userEvent.click(btn);
     await waitFor(() => {
       expect(handler).toHaveBeenCalled();
-      expect(mockRedirectToSignIn).toHaveBeenCalled();
+      expect(mockRedirectToSignUp).toHaveBeenCalled();
     });
   });
 
   it('uses text passed as children', async () => {
-    render(<SignInButton>text</SignInButton>);
+    render(<SignUpButton>text</SignUpButton>);
     screen.getByText('text');
   });
 
   it('throws if multiple children provided', async () => {
     expect(() => {
       render(
-        <SignInButton>
+        <SignUpButton>
           <button>1</button>
           <button>2</button>
-        </SignInButton>,
+        </SignUpButton>,
       );
     }).toThrow();
   });
